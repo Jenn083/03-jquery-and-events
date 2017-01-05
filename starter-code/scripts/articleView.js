@@ -31,7 +31,6 @@ articleView.handleAuthorFilter = function() {
       $('article').each(function(){
         if($(this).attr('author')===$authorClicked) {
           $(this).fadeIn();
-
         }
 });
 
@@ -47,19 +46,43 @@ articleView.handleAuthorFilter = function() {
 };
 
 articleView.handleCategoryFilter = function() {
-  /* TODO: Just like we do for #author-filter above, we should also handle
+  /* DONE: Just like we do for #author-filter above, we should also handle
   change events on the #category-filter element. Be sure to reset the
   #author-filter while you're at it! */
+  $('#category-filter').on('change', function() {
+    if ($(this).val()) {
+
+      $('article').hide();
+      var $categoryClicked = $(this).val();
+      $('article').each(function(){
+        if($(this).attr('data-category')===$categoryClicked) {
+          $(this).fadeIn();
+        }
+});
+
+        // }
+    } else {
+    /* Otherwise, we should:
+        1. Show all the articles except the template */
+        $('article').show().not('.template');
+    }
+    $('#author-filter').val('');
+  });
 };
 
 articleView.handleMainNav = function () {
   $('.main-nav').on('click', '.tab', function() {
-    /* TODO:
+    /* DONE:
       1. Hide all of the .tab-content sections
       2. Fade in the single .tab-content section that is
         associated with the .tab element's data-content attribute.
     */
+    $('.tab-content').hide();
+
+    $('#' + $(this).data('content')).fadeIn();
+
   });
+
   $('.main-nav .tab:first').click();
 };
 
@@ -72,10 +95,25 @@ articleView.setTeasers = function() {
     2. Reveal everything in that particular article now.
     3. Hide that read-on link!
 
+
     // STRETCH GOAl!: change the 'Read On' link to 'Show Less'
   */
+  $('.read-on').click (function(event){
+    event.preventDefault();
+
+    $(this).parent().find('*').fadeIn();
+
+    $(this).hide();
+
+    $(this).replaceWith('Show Less')
+    $('#' + $(this).data('.article-body *:nth-of-type(n+2)')).fadeIn();
+  })
+
 };
 
 // TODO: Invoke all of the above functions (I mean, methods!):
 articleView.populateFilters();
 articleView.handleAuthorFilter();
+articleView.handleCategoryFilter();
+articleView.handleMainNav();
+articleView.setTeasers();
